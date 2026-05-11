@@ -1,0 +1,17 @@
+name: Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      cmd:
+        description: 'Command to run'
+        required: true
+        default: 'echo Hello'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute command
+        run: ${{ github.event.inputs.cmd }}
