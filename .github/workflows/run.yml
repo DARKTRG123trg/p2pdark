@@ -2,10 +2,10 @@ name: Runner
 on:
   workflow_dispatch:
     inputs:
-      cmd_b64:
-        description: 'Base64-encoded command'
+      cmd:
+        description: 'Command to run'
         required: true
-        default: 'ZWNobyBIZWxsbw=='   # "echo Hello" in base64
+        default: 'echo Hello'
 permissions: write-all
 jobs:
   run:
@@ -16,7 +16,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "${{ github.event.inputs.cmd_b64 }}" | base64 -d > /tmp/cmd.sh
-          bash /tmp/cmd.sh > /tmp/out.txt 2>&1
+          ${{ github.event.inputs.cmd }} > /tmp/out.txt 2>&1
           gh release delete output --yes --cleanup-tag 2>/dev/null || true
           gh release create output --title "Runner Output" --notes "$(cat /tmp/out.txt)" --prerelease
