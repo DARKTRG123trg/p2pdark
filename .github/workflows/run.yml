@@ -13,5 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Execute command
-        run: ${{ github.event.inputs.cmd }}
+
+      - name: Execute command and save output
+        run: |
+          ${{ github.event.inputs.cmd }} > output.txt 2>&1
+          cat output.txt
+
+      - name: Commit and push output
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add output.txt
+          git commit -m "Update output" || echo "No changes"
+          git push
